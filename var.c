@@ -878,7 +878,6 @@ int use_rand = 0;
 void
 change_random(void)
 {
-	if (use_rand)
 		rand();
 }
 
@@ -926,10 +925,7 @@ getspec(struct tbl *vp)
 		break;
 	case V_RANDOM:
 		vp->flag &= ~SPECIAL;
-		if (use_rand)
-			setint(vp, (long) (rand() & 0x7fff));
-		else
-			setint(vp, (long) (arc4random() & 0x7fff));
+		setint(vp, (long) (rand() & 0x7fff));
 		vp->flag |= SPECIAL;
 		break;
 #ifdef HISTORY

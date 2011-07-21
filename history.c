@@ -672,7 +672,7 @@ hist_init(Source *s)
 		 */
 		if (base == MAP_FAILED || *base != HMAGIC1 || base[1] != HMAGIC2) {
 			if (base != MAP_FAILED)
-				munmap((caddr_t)base, hsize);
+				munmap((caddr_t*)base, hsize);
 			hist_finish();
 			if (unlink(hname) != 0)
 				return;
@@ -685,13 +685,13 @@ hist_init(Source *s)
 				if (hist_shrink(base, hsize))
 					if (unlink(hname) != 0)
 						return;
-				munmap((caddr_t)base, hsize);
+				munmap((caddr_t*)base, hsize);
 				hist_finish();
 				goto retry;
 			}
 		}
 		histload(hist_source, base+2, hsize-2);
-		munmap((caddr_t)base, hsize);
+		munmap((caddr_t*)base, hsize);
 	}
 	(void) flock(histfd, LOCK_UN);
 	hsize = lseek(histfd, 0L, SEEK_END);
@@ -909,14 +909,14 @@ writehistfile(int lno, char *cmd)
 				goto bad;
 			new = base + hsize;
 			if (*new != COMMAND) {
-				munmap((caddr_t)base, sizenow);
+				munmap((caddr_t*)base, sizenow);
 				goto bad;
 			}
 			hist_source->line--;
 			histload(hist_source, new, bytes);
 			hist_source->line++;
 			lno = hist_source->line;
-			munmap((caddr_t)base, sizenow);
+			munmap((caddr_t*)base, sizenow);
 			hsize = sizenow;
 		} else {
 			/* it has shrunk */

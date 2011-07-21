@@ -485,7 +485,7 @@ c_trap(char **wp)
 			for (p = sigtraps, i = NSIG+1; --i >= 0; p++)
 				if (p->trap == NULL && p->name)
 					shprintf(" %s", p->name);
-			shprintf(newline);
+			shprintf("%s", newline);
 		}
 #endif
 		return 0;
@@ -745,17 +745,17 @@ timex(struct op *t, int f, volatile int *xerrok)
 
 	if (tf & TF_NOARGS) { /* ksh93 - report shell times (shell+kids) */
 		tf |= TF_NOREAL;
-		timeradd(&ru0.ru_utime, &cru0.ru_utime, &usrtime);
-		timeradd(&ru0.ru_stime, &cru0.ru_stime, &systime);
+		(void)timeradd(&ru0.ru_utime, &cru0.ru_utime, &usrtime);
+		(void)timeradd(&ru0.ru_stime, &cru0.ru_stime, &systime);
 	} else {
-		timersub(&ru1.ru_utime, &ru0.ru_utime, &usrtime);
-		timeradd(&usrtime, &j_usrtime, &usrtime);
-		timersub(&ru1.ru_stime, &ru0.ru_stime, &systime);
-		timeradd(&systime, &j_systime, &systime);
+		(void)timersub(&ru1.ru_utime, &ru0.ru_utime, &usrtime);
+		(void)timeradd(&usrtime, &j_usrtime, &usrtime);
+		(void)timersub(&ru1.ru_stime, &ru0.ru_stime, &systime);
+		(void)timeradd(&systime, &j_systime, &systime);
 	}
 
 	if (!(tf & TF_NOREAL)) {
-		timersub(&tv1, &tv0, &tv1);
+		(void)timersub(&tv1, &tv0, &tv1);
 		if (tf & TF_POSIX)
 			p_time(shl_out, 1, &tv1, 5, "real ", "\n");
 		else
@@ -832,60 +832,6 @@ c_exec(char **wp)
 	return 0;
 }
 
-static int
-c_mknod(char **wp)
-{
-	int argc, optc, ismkfifo = 0, ret;
-	char **argv;
-	void *set = NULL;
-	mode_t mode = 0, oldmode = 0;
-
-	while ((optc = ksh_getopt(wp, &builtin_opt, "m:")) != -1) {
-		switch (optc) {
-		case 'm':
-			set = setmode(builtin_opt.optarg);
-			if (set == NULL) {
-				bi_errorf("invalid file mode");
-				return 1;
-			}
-			mode = getmode(set, DEFFILEMODE);
-			free(set);
-			break;
-		default:
-			goto usage;
-		}
-	}
-	argv = &wp[builtin_opt.optind];
-	if (argv[0] == NULL)
-		goto usage;
-	for (argc = 0; argv[argc]; argc++)
-		;
-	if (argc == 2 && argv[1][0] == 'p') {
-		ismkfifo = 1;
-		argc--;
-	} else if (argc != 4)
-		goto usage;
-
-	if (set)
-		oldmode = umask(0);
-	else
-		mode = DEFFILEMODE;
-
-	if (ismkfifo)
-		ret = domkfifo(argc, argv, mode);
-	else
-		ret = domknod(argc, argv, mode);
-
-	if (set)
-		umask(oldmode);
-	return ret;
-usage:
-	builtin_argv0 = NULL;
-	bi_errorf("usage: mknod [-m mode] name b|c major minor");
-	bi_errorf("usage: mknod [-m mode] name p");
-	return 1;
-}
-
 /* dummy function, special case in comexec() */
 int
 c_builtin(char **wp)
@@ -924,6 +870,5 @@ const struct builtin shbuiltins [] = {
 	{"ulimit", c_ulimit},
 	{"+umask", c_umask},
 	{"*=unset", c_unset},
-	{"mknod", c_mknod},
 	{NULL, NULL}
 };

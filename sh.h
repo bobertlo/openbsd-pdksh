@@ -28,6 +28,10 @@
 
 #include <paths.h>
 
+#ifdef __linux__
+typedef sighandler_t sig_t;
+#endif
+
 /* Find a integer type that is at least 32 bits (or die) - SIZEOF_* defined
  * by autoconf (assumes an 8 bit byte, but I'm not concerned).
  * NOTE: INT32 may end up being more than 32 bits.

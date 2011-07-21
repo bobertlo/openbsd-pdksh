@@ -63,7 +63,7 @@ static const char *initcoms [] = {
 	NULL
 };
 
-char username[_PW_NAME_LEN + 1];
+char username[NAME_MAX + 1];
 
 #define version_param  (initcoms[2])
 

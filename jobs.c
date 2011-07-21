@@ -112,7 +112,7 @@ static pid_t		async_pid;
 
 static int		nzombie;	/* # of zombies owned by this process */
 INT32			njobs;		/* # of jobs started */
-static int		child_max;	/* CHILD_MAX */
+static int		child_max = 0;	/* CHILD_MAX */
 
 
 /* held_sigchld is set if sigchld occurs before a job is completely started */
@@ -143,7 +143,8 @@ static int		kill_job(Job *, int);
 void
 j_init(int mflagset)
 {
-	child_max = CHILD_MAX; /* so syscon() isn't always being called */
+	if(!child_max)
+		child_max = sysconf(_SC_CHILD_MAX);
 
 	sigemptyset(&sm_default);
 	sigprocmask(SIG_SETMASK, &sm_default, (sigset_t *) 0);
@@ -688,7 +689,7 @@ j_resume(const char *cp, int bg)
 		}
 		shprintf("%s%s", p->command, p->next ? "| " : null);
 	}
-	shprintf(newline);
+	shprintf("%s", newline);
 	shf_flush(shl_stdout);
 	if (running)
 		j->state = PRUNNING;
@@ -1129,10 +1130,10 @@ found:
 			continue;
 		}
 
-		timeradd(&j->usrtime, &ru1.ru_utime, &j->usrtime);
-		timersub(&j->usrtime, &ru0.ru_utime, &j->usrtime);
-		timeradd(&j->systime, &ru1.ru_stime, &j->systime);
-		timersub(&j->systime, &ru0.ru_stime, &j->systime);
+		(void)timeradd(&j->usrtime, &ru1.ru_utime, &j->usrtime);
+		(void)timersub(&j->usrtime, &ru0.ru_utime, &j->usrtime);
+		(void)timeradd(&j->systime, &ru1.ru_stime, &j->systime);
+		(void)timersub(&j->systime, &ru0.ru_stime, &j->systime);
 		ru0 = ru1;
 		p->status = status;
 #ifdef JOBS

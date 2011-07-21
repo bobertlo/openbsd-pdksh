@@ -7,6 +7,11 @@
 #include "sh.h"
 #include <ctype.h>
 #include <sys/param.h>	/* for MAXPATHLEN */
+
+#ifdef __linux__
+#include <grp.h>
+#endif
+
 #include "charclass.h"
 
 short ctypes [UCHAR_MAX+1];	/* type bits for unsigned char */
@@ -237,7 +242,7 @@ printoptions(int verbose)
 		for (i = 0; i < NELEM(options); i++)
 			if (Flag(i) && options[i].name)
 				shprintf(" -o %s", options[i].name);
-		shprintf(newline);
+		shprintf("%s", newline);
 	}
 }
 
@@ -712,7 +717,7 @@ posix_cclass(const unsigned char *pattern, int test, const unsigned char **ep)
 	size_t len;
 	int rval = 0;
 	 
-	if ((colon = strchr(pattern, ':')) == NULL || colon[1] != MAGIC) {
+	if ((colon = (unsigned char*)strchr((char*)pattern, ':')) == NULL || colon[1] != MAGIC) {
 		*ep = pattern - 2;
 		return -1;
 	}
@@ -720,7 +725,7 @@ posix_cclass(const unsigned char *pattern, int test, const unsigned char **ep)
 	len = (size_t)(colon - pattern);
 
 	for (cc = cclasses; cc->name != NULL; cc++) {
-		if (!strncmp(pattern, cc->name, len) && cc->name[len] == '\0') {
+		if (!strncmp((char*)pattern, cc->name, len) && cc->name[len] == '\0') {
 			if (cc->isctype(test))
 				rval = 1;
 			break;
@@ -745,7 +750,7 @@ cclass(const unsigned char *p, int sub)
 		if ((p[0] == MAGIC && p[1] == '[' && p[2] == ':') ||
 		    (p[0] == '[' && p[1] == ':')) {
 			do {
-				const char *pp = p + (*p == MAGIC) + 2;
+				const unsigned char *pp = p + (*p == MAGIC) + 2;
 				rv = posix_cclass(pp, sub, &p);
 				switch (rv) {
 				case 1:

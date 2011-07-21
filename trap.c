@@ -5,6 +5,9 @@
  */
 
 #include "sh.h"
+#ifdef __linux__
+#include "linux_signals.h"
+#endif
 
 Trap sigtraps[NSIG + 1];
 
@@ -22,8 +25,13 @@ inittraps(void)
 			sigtraps[i].name = "ERR";
 			sigtraps[i].mess = "Error handler";
 		} else {
+#ifdef __linux__
+			sigtraps[i].name = linux_signals[i].name;
+			sigtraps[i].mess = linux_signals[i].mess;
+#else
 			sigtraps[i].name = sys_signame[i];
 			sigtraps[i].mess = sys_siglist[i];
+#endif
 		}
 	}
 	sigtraps[SIGEXIT_].name = "EXIT";	/* our name for signal 0 */
