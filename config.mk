@@ -1,9 +1,8 @@
 
 VERSION = 4.9
-PREFIX = /home/robert
+PREFIX = /usr/local
 BINDIR = ${PREFIX}/bin
 MANPREFIX = ${PREFIX}/share/man
-
 
 INCS =
 LIBS =
@@ -14,5 +13,4 @@ LDFLAGS = ${LIBS}
 CC = musl-gcc
 LDFLAGS = ${LIBS} -static
 
-# this option for native musl only, not glibc (strlcpy/strlcat not bundled)
 #CC = gcc
