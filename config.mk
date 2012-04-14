@@ -8,9 +8,7 @@ INCS =
 LIBS =
 
 CFLAGS = -Wall ${INCS} -D_GNU_SOURCE -D_BSD_SOURCE
-LDFLAGS = ${LIBS} 
-
-CC = musl-gcc
 LDFLAGS = ${LIBS} -static
 
+CC = musl-gcc
 #CC = gcc
