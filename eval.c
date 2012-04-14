@@ -152,7 +152,10 @@ expand(char *cp,	/* input word */
 	char *dp, *sp;		/* dest., source */
 	int fdo, word;		/* second pass flags; have word */
 	int doblank;		/* field splitting of parameter/command subst */
-	Expand x;		/* expansion variables */
+	Expand x = {
+		/* expansion variables */
+		NULL, { NULL }, NULL, 0
+	};
 	SubType st_head, *st;
 	int newlines = 0; /* For trailing newlines in COMSUB */
 	int saw_eq, tilde_ok;
@@ -265,7 +268,7 @@ expand(char *cp,	/* input word */
 			    {
 				char *varname = ++sp; /* skip the { or x (}) */
 				int stype;
-				int slen;
+				int slen = 0;
 
 				sp = strchr(sp, '\0') + 1; /* skip variable */
 				type = varsub(&x, varname, sp, &stype, &slen);
@@ -709,16 +712,13 @@ varsub(Expand *xp, char *sp, char *word,
 		/* Check for size of array */
 		if ((p=strchr(sp,'[')) && (p[1]=='*'||p[1]=='@') && p[2]==']') {
 			int n = 0;
-			int max = 0;
 
 			vp = global(arrayname(sp));
 			if (vp->flag & (ISSET|ARRAY))
 				zero_ok = 1;
 			for (; vp; vp = vp->u.array)
-				if (vp->flag & ISSET) {
-					max = vp->index + 1;
+				if (vp->flag & ISSET)
 					n++;
-				}
 			c = n; /* ksh88/ksh93 go for number, not max index */
 		} else if (c == '*' || c == '@')
 			c = e->loc->argc;

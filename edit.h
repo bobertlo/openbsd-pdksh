@@ -37,7 +37,7 @@ typedef struct {
 
 EXTERN X_chars edchars;
 
-/* x_fc_glob() flags */
+/* x_cf_glob() flags */
 #define XCF_COMMAND	BIT(0)	/* Do command completion */
 #define XCF_FILE	BIT(1)	/* Do file completion */
 #define XCF_FULLPATH	BIT(2)	/* command completion: store full path */

@@ -1,8 +1,8 @@
-.\"	$OpenBSD: ksh.1,v 1.138 2010/09/20 07:41:17 jmc Exp $
+.\"	$OpenBSD: ksh.1,v 1.141 2011/09/03 22:59:08 jmc Exp $
 .\"
 .\"	Public Domain
 .\"
-.Dd $Mdocdate: September 20 2010 $
+.Dd $Mdocdate: September 3 2011 $
 .Dt KSH 1
 .Os
 .Sh NAME
@@ -13,12 +13,7 @@
 .Bk -words
 .Op Fl +abCefhiklmnpruvXx
 .Op Fl +o Ar option
-.Oo
-.Fl c Ar string \*(Ba
-.Fl s \*(Ba
-.Ar file
-.Op Ar argument ...
-.Oc
+.Op Fl c Ar string \*(Ba Fl s \*(Ba Ar file Op Ar argument ...
 .Ek
 .Sh DESCRIPTION
 .Nm
@@ -1622,6 +1617,9 @@ is abbreviated as
 .It Li \eW
 The basename of
 the current working directory.
+.Dv $HOME
+is abbreviated as
+.Sq ~ .
 .It Li \e!
 The current history number.
 An unescaped
@@ -1895,11 +1893,11 @@ and
 .Sq :]
 stands for the list of all characters belonging to that class.
 Supported character classes:
-.Bl -column "xdigit" "xdigit" "xdigit" -offset indent
-.It Li "alnum" Ta "cntrl" Ta "lower" Ta "space"
-.It Li "alpha" Ta "digit" Ta "print" Ta "upper"
-.It Li "blank" Ta "graph" Ta "punct" Ta "xdigit"
-.El
+.Bd -literal -offset indent
+alnum	cntrl	lower	space
+alpha	digit	print	upper
+blank	graph	punct	xdigit
+.Ed
 .Pp
 These match characters using the macros specified in
 .Xr ctype 3 .

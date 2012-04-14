@@ -750,5 +750,11 @@ is_restricted(char *name)
 	if ((p = strrchr(name, '/')))
 		name = p;
 	/* accepts rsh, rksh, rpdksh, pdrksh, etc. */
-	return (p = strchr(name, 'r')) && strstr(p, "sh");
+	if (strcmp(name, "rsh") && \
+		strcmp(name, "rksh") && \
+		strcmp(name, "rpdksh") && \
+		strcmp(name, "pdrksh"))
+		return(0);
+	else
+		return(1);
 }
