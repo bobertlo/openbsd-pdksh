@@ -18,8 +18,8 @@ hash(const char *n)
 	unsigned int h = 0;
 
 	while (*n != '\0')
-		h = 2*h + *n++;
-	return h * 32821;	/* scatter bits */
+		h = 33*h + (unsigned char)(*n++);
+	return h;
 }
 
 void
@@ -44,7 +44,7 @@ texpand(struct table *tp, int nsize)
 	for (i = 0; i < nsize; i++)
 		ntblp[i] = NULL;
 	tp->size = nsize;
-	tp->nfree = 8*nsize/10;	/* table can get 80% full */
+	tp->nfree = 7*nsize/10;	/* table can get 70% full */
 	tp->tbls = ntblp;
 	if (otblp == NULL)
 		return;
@@ -108,7 +108,10 @@ ktenter(struct table *tp, const char *n, unsigned int h)
 	}
 
 	if (tp->nfree <= 0) {	/* too full */
-		texpand(tp, 2*tp->size);
+		if(tp->size <= INT_MAX/2)
+			texpand(tp, 2*tp->size);
+		else
+			internal_errorf(1, "too many vars");
 		goto Search;
 	}
 

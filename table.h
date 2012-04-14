@@ -8,7 +8,7 @@
 
 struct table {
 	Area   *areap;		/* area to allocate entries */
-	short	size, nfree;	/* hash size (always 2^^n), free entries */
+	int	size, nfree;	/* hash size (always 2^^n), free entries */
 	struct	tbl **tbls;	/* hashed table items */
 };
 
