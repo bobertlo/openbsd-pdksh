@@ -38,8 +38,8 @@ install: all
 	ln -sf ksh ${DESTDIR}${PREFIX}/bin/rksh
 	chmod 755 ${DESTDIR}${PREFIX}/bin/${BIN}
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
-	cp -f ksh.1 ${DISTDIR}${MANPREFIX}/man1
-	cp -f sh.1 ${DISTDIR}${MANPREFIX}/man1
+	cp -f ksh.1 ${DESTDIR}${MANPREFIX}/man1
+	cp -f sh.1 ${DESTDIR}${MANPREFIX}/man1
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/ksh.1
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/sh.1
 	ln -sf ksh.1 ${DESTDIR}${MANPREFIX}/man1/rksh.1
