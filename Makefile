@@ -35,7 +35,6 @@ clean:
 install: all
 	mkdir -p ${DESTDIR}${PREFIX}/bin
 	cp -f ${BIN} ${DESTDIR}${PREFIX}/bin
-	ln -sf ksh ${DESTDIR}${PREFIX}/bin/sh
 	ln -sf ksh ${DESTDIR}${PREFIX}/bin/rksh
 	chmod 755 ${DESTDIR}${PREFIX}/bin/${BIN}
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
